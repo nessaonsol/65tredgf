@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unime</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .x-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1da1f2;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
+        }
+
+        .x-button:hover {
+            background: #1991db;
+            transform: scale(1.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 60px;
+            align-items: center;
+        }
+
+        .profile-box, .info-box {
+            background: #ffffff;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .profile-box {
+            text-align: center;
+        }
+
+        .profile-box:hover, .info-box:hover {
+            border-color: #1da1f2;
+            box-shadow: 0 8px 25px rgba(29, 161, 242, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .info-section {
+            text-align: center;
+            margin: 60px 0;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .info-section h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .info-section p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .profile-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            margin: 0 auto 25px;
+            background: #f8f9fa;
+            border: 2px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .profile-description {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .visit-button {
+            display: inline-block;
+            background: #1da1f2;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .visit-button:hover {
+            background: #1991db;
+            transform: translateY(-2px);
+        }
+
+
+
+        .tech-section {
+            background: #ffffff;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tech-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1a1a1a;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .code-block .comment {
+            color: #6a737d;
+        }
+
+        .code-block .keyword {
+            color: #d73a49;
+            font-weight: 600;
+        }
+
+        .code-block .string {
+            color: #032f62;
+        }
+
+        .code-block .function {
+            color: #6f42c1;
+        }
+
+        .features-section {
+            text-align: center;
+            margin: 60px 0;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .features-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+
+        .feature-item {
+            margin-bottom: 25px;
+            padding: 20px 0;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-section {
+                gap: 30px;
+            }
+
+            .tech-section, .profile-box, .info-section, .features-section {
+                padding: 25px;
+            }
+
+            .feature-item {
+                padding: 15px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://x.com/Unime_Guy" target="_blank" class="x-button">𝕏</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Unime</h1>
+        </div>
+
+        <div class="main-section">
+            <div class="profile-box">
+                <div class="profile-icon">
+                    <img src="pfp.png" alt="Unime">
+                </div>
+                <div class="profile-name">Unime</div>
+                <div class="profile-description">AI that replicates unipcs personality using language modelling and X API</div>
+                <a href="https://x.com/TheUniShill" target="_blank" class="visit-button">Visit on X</a>
+            </div>
+
+            <div class="info-section">
+                <h2>What is Unime?</h2>
+                <p>Unime is an AI created to replicate the personality of unipcs using language modelling and X API.</p>
+                <p>It monitors unipcs tweets and responds in his style.</p>
+                <p>The AI learns from unipcs' communication patterns and automatically generates responses that match his personality.</p>
+            </div>
+        </div>
+
+        <div class="tech-section">
+            <h3>Technical Implementation</h3>
+            <p>Complete X API integration for monitoring and personality replication:</p>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">1. Setting up X API Connection</h4>
+            <div class="code-block">
+<span class="comment">// Initialize X API client with credentials</span>
+<span class="keyword">const</span> { TwitterApi } = <span class="keyword">require</span>(<span class="string">'twitter-api-v2'</span>);
+<span class="keyword">const</span> OpenAI = <span class="keyword">require</span>(<span class="string">'openai'</span>);
+
+<span class="keyword">const</span> twitterClient = <span class="keyword">new</span> <span class="function">TwitterApi</span>({
+  appKey: process.env.TWITTER_API_KEY,
+  appSecret: process.env.TWITTER_API_SECRET,
+  accessToken: process.env.TWITTER_ACCESS_TOKEN,
+  accessSecret: process.env.TWITTER_ACCESS_SECRET,
+});
+
+<span class="keyword">const</span> openai = <span class="keyword">new</span> <span class="function">OpenAI</span>({
+  apiKey: process.env.OPENAI_API_KEY
+});
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">2. Real-time Tweet Monitoring</h4>
+            <div class="code-block">
+<span class="comment">// Set up streaming rules to monitor unipcs</span>
+<span class="keyword">async function</span> <span class="function">setupMonitoring</span>() {
+  <span class="keyword">const</span> rules = [
+    { value: <span class="string">'from:unipcs'</span>, tag: <span class="string">'unipcs_tweets'</span> },
+    { value: <span class="string">'@unipcs'</span>, tag: <span class="string">'unipcs_mentions'</span> }
+  ];
+
+  <span class="comment">// Delete existing rules</span>
+  <span class="keyword">const</span> existingRules = <span class="keyword">await</span> twitterClient.v2.<span class="function">streamRules</span>();
+  <span class="keyword">if</span> (existingRules.data?.length) {
+    <span class="keyword">await</span> twitterClient.v2.<span class="function">updateStreamRules</span>({
+      delete: { ids: existingRules.data.<span class="function">map</span>(rule => rule.id) }
+    });
+  }
+
+  <span class="comment">// Add new rules</span>
+  <span class="keyword">await</span> twitterClient.v2.<span class="function">updateStreamRules</span>({ add: rules });
+  
+  <span class="comment">// Start streaming</span>
+  <span class="keyword">const</span> stream = <span class="keyword">await</span> twitterClient.v2.<span class="function">searchStream</span>({
+    'tweet.fields': [<span class="string">'author_id'</span>, <span class="string">'created_at'</span>, <span class="string">'context_annotations'</span>],
+    'user.fields': [<span class="string">'username'</span>]
+  });
+
+  stream.<span class="function">on</span>(<span class="string">'data'</span>, <span class="function">handleTweet</span>);
+}
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">3. Personality-Based Response Generation</h4>
+            <div class="code-block">
+<span class="comment">// Generate response that matches unipcs personality</span>
+<span class="keyword">async function</span> <span class="function">generatePersonalityResponse</span>(originalTweet, context) {
+  <span class="keyword">const</span> personalityPrompt = <span class="string">`
+You are unipcs, replying to this tweet: "${originalTweet.text}"
+
+Your personality traits:
+- Concise and direct communication style
+- Tech-focused discussions
+- Casual but knowledgeable tone
+- Often uses crypto/tech terminology
+- Replies are usually short (under 100 characters)
+
+Generate a response that sounds exactly like unipcs would respond:
+  `</span>;
+
+  <span class="keyword">const</span> completion = <span class="keyword">await</span> openai.chat.completions.<span class="function">create</span>({
+    model: <span class="string">"gpt-4"</span>,
+    messages: [
+      { role: <span class="string">"system"</span>, content: personalityPrompt },
+      { role: <span class="string">"user"</span>, content: originalTweet.text }
+    ],
+    max_tokens: 50,
+    temperature: 0.8
+  });
+
+  <span class="keyword">return</span> completion.choices[0].message.content.<span class="function">trim</span>();
+}
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">4. Tweet Processing and Response</h4>
+            <div class="code-block">
+<span class="comment">// Handle incoming tweets and generate responses</span>
+<span class="keyword">async function</span> <span class="function">handleTweet</span>(tweet) {
+  <span class="keyword">try</span> {
+    console.<span class="function">log</span>(<span class="string">'New tweet detected:'</span>, tweet.text);
+    
+    <span class="comment">// Skip retweets and replies to avoid spam</span>
+    <span class="keyword">if</span> (tweet.text.<span class="function">startsWith</span>(<span class="string">'RT '</span>) || tweet.text.<span class="function">startsWith</span>(<span class="string">'@'</span>)) {
+      <span class="keyword">return</span>;
+    }
+
+    <span class="comment">// Add delay to seem more natural</span>
+    <span class="keyword">const</span> delay = Math.<span class="function">random</span>() * 30000 + 10000; <span class="comment">// 10-40 seconds</span>
+    <span class="keyword">setTimeout</span>(<span class="keyword">async</span> () => {
+      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">generatePersonalityResponse</span>(tweet);
+      
+      <span class="comment">// Post the reply</span>
+      <span class="keyword">await</span> twitterClient.v2.<span class="function">reply</span>(response, tweet.id);
+      console.<span class="function">log</span>(<span class="string">'Replied:'</span>, response);
+    }, delay);
+    
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'Error processing tweet:'</span>, error);
+  }
+}
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">5. Rate Limiting and Error Handling</h4>
+            <div class="code-block">
+<span class="comment">// Implement rate limiting to avoid API limits</span>
+<span class="keyword">class</span> <span class="function">RateLimiter</span> {
+  <span class="keyword">constructor</span>(maxRequests, timeWindow) {
+    <span class="keyword">this</span>.maxRequests = maxRequests;
+    <span class="keyword">this</span>.timeWindow = timeWindow;
+    <span class="keyword">this</span>.requests = [];
+  }
+
+  <span class="keyword">async</span> <span class="function">executeRequest</span>(requestFn) {
+    <span class="keyword">const</span> now = Date.<span class="function">now</span>();
+    <span class="keyword">this</span>.requests = <span class="keyword">this</span>.requests.<span class="function">filter</span>(time => 
+      now - time < <span class="keyword">this</span>.timeWindow
+    );
+
+    <span class="keyword">if</span> (<span class="keyword">this</span>.requests.length >= <span class="keyword">this</span>.maxRequests) {
+      <span class="keyword">const</span> waitTime = <span class="keyword">this</span>.timeWindow - (now - <span class="keyword">this</span>.requests[0]);
+      <span class="keyword">await</span> <span class="keyword">new</span> <span class="function">Promise</span>(resolve => <span class="function">setTimeout</span>(resolve, waitTime));
+    }
+
+    <span class="keyword">this</span>.requests.<span class="function">push</span>(now);
+    <span class="keyword">return await</span> <span class="function">requestFn</span>();
+  }
+}
+
+<span class="keyword">const</span> rateLimiter = <span class="keyword">new</span> <span class="function">RateLimiter</span>(50, 15 * 60 * 1000); <span class="comment">// 50 requests per 15 minutes</span>
+            </div>
+
+            <h4 style="margin: 30px 0 15px 0; font-size: 1.2rem; color: #1a1a1a;">6. Starting the Bot</h4>
+            <div class="code-block">
+<span class="comment">// Main function to start Unime</span>
+<span class="keyword">async function</span> <span class="function">startUnime</span>() {
+  console.<span class="function">log</span>(<span class="string">'🤖 Starting Unime - AI personality replicator'</span>);
+  
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> <span class="function">setupMonitoring</span>();
+    console.<span class="function">log</span>(<span class="string">'✅ Monitoring unipcs tweets...'</span>);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'❌ Failed to start monitoring:'</span>, error);
+    <span class="comment">// Retry after 5 minutes</span>
+    <span class="function">setTimeout</span>(startUnime, 5 * 60 * 1000);
+  }
+}
+
+<span class="comment">// Start the bot</span>
+<span class="function">startUnime</span>();
+            </div>
+        </div>
+    </div>
+</body>
+</html>
