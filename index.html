@@ -3,1447 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Screener</title>
+    <title>The Useless Stock</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a1611;
-            color: #ffffff;
-            min-height: 100vh;
-        }
-
-        .header {
-            background: #2a2318;
-            padding: 15px 20px;
-            border-bottom: 1px solid #3d342a;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .x-button {
-            background: #f59e0b;
-            color: #1a1611;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            transition: all 0.2s;
-            white-space: nowrap;
-            order: 3;
-        }
-
-        .x-button:hover {
-            background: #fbbf24;
-            transform: scale(1.05);
-        }
-
-        .search-container {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
             position: relative;
-            flex: 1;
-            max-width: 300px;
         }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 40px 10px 15px;
-            background: #3d342a;
-            border: 1px solid #4d423a;
-            border-radius: 8px;
+        
+        .x-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #000;
             color: white;
-            font-size: 14px;
-        }
-
-        .search-input::placeholder {
-            color: #a39080;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #f59e0b;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a39080;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 30px;
-            font-size: 14px;
-            margin-left: auto;
-            order: 4;
-        }
-
-        .stat-item {
-            color: #a39080;
-        }
-
-        .stat-value {
-            color: #f59e0b;
-            font-weight: 600;
-        }
-
-        .filters {
-            background: #2a2318;
-            padding: 15px 20px;
-            border-bottom: 1px solid #3d342a;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: #3d342a;
-            border: 1px solid #4d423a;
-            border-radius: 6px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover {
-            background: #4d423a;
-        }
-
-        .filter-btn.active {
-            background: #f59e0b;
-            border-color: #f59e0b;
-            color: #1a1611;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .stocks-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .stocks-table th {
-            background: #2a2318;
-            padding: 15px 12px;
-            text-align: left;
-            font-size: 12px;
-            color: #a39080;
-            font-weight: 600;
-            border-bottom: 1px solid #3d342a;
-            position: sticky;
-            top: 0;
-        }
-
-        .stocks-table td {
-            padding: 12px;
-            border-bottom: 1px solid #262016;
-            font-size: 14px;
-        }
-
-        .stocks-table tr:hover {
-            background: #262016;
-        }
-
-        .token-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .token-logo {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #4CAF50, #2196F3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .token-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .token-symbol {
-            font-weight: 600;
-            color: white;
-        }
-
-        .token-name {
-            font-size: 12px;
-            color: #a39080;
-        }
-
-        .price {
-            font-weight: 600;
-            color: white;
-        }
-
-        .age {
-            color: #a39080;
-            font-size: 12px;
-        }
-
-        .percentage {
-            font-weight: 600;
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .positive {
-            color: #f59e0b;
-            background: rgba(245, 158, 11, 0.1);
-        }
-
-        .negative {
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .volume {
-            color: #a39080;
-            font-size: 12px;
-        }
-
-        .buy-buttons {
-            display: flex;
-            gap: 5px;
-        }
-
-        .buy-btn {
-            padding: 4px 8px;
-            border: none;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
+            padding: 10px 15px;
             text-decoration: none;
-            transition: all 0.2s;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+            z-index: 1000;
         }
-
-        .buy-primary {
-            background: #f59e0b;
-            color: #1a1611;
+        
+        .x-button:hover {
+            background: #333;
         }
-
-        .buy-primary:hover {
-            background: #fbbf24;
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        .buy-secondary {
-            background: #d97706;
-            color: white;
-        }
-
-        .buy-secondary:hover {
-            background: #f59e0b;
-        }
-
-        .rank {
-            color: #a39080;
-            font-size: 12px;
-            width: 30px;
-        }
-
-        .loading {
+        
+        h1 {
             text-align: center;
-            padding: 40px;
-            color: #a39080;
+            color: #2c3e50;
+            margin-bottom: 30px;
         }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .search-container {
-                max-width: 100%;
-            }
-
-            .x-button {
-                margin-left: 0;
-                margin-right: 0;
-                order: -1;
-            }
-
-            .stats-bar {
-                order: 1;
-            }
-
-            .filters {
-                overflow-x: auto;
-            }
-
-            .stocks-table {
-                font-size: 12px;
-            }
-
-            .stocks-table th,
-            .stocks-table td {
-                padding: 8px 6px;
-            }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .highlight {
+            background: #e8f4fd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .reddit-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .reddit-link {
+            background: #ff4500;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        
+        .reddit-link:hover {
+            background: #e03d00;
+        }
+        
+        .warning {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .warning h3 {
+            color: #c62828;
+            margin: 0 0 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            📊 STOCK SCREENER
+    <a href="https://x.com/UselessStockSol" target="_blank" class="x-button">x</a>
+    
+    <div class="container">
+        <h1>The Useless Stock</h1>
+        
+        <div class="highlight">
+            <h2>Most Popular Term in Stock Communities</h2>
+            <p><strong>"Useless stocks"</strong> is the most commonly used phrase across Reddit and other trading communities to describe stocks that have no value or are considered worthless investments.</p>
         </div>
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search stocks..." id="searchInput">
-            <span class="search-icon">🔍</span>
+        
+        <h2>Why "Useless Stocks" is #1</h2>
+        <p>While traders use various slang terms, <strong>"useless stocks"</strong> has become the go-to phrase because:</p>
+        <ul>
+            <li><strong>Simple and clear</strong> - Everyone immediately understands what it means</li>
+            <li><strong>Universal usage</strong> - Used across all major trading subreddits</li>
+            <li><strong>No confusion</strong> - Unlike technical terms, "useless" is straightforward</li>
+            <li><strong>Emotional impact</strong> - Captures the frustration investors feel</li>
+        </ul>
+        
+        <h2>What Makes a Stock "Useless"</h2>
+        <p>Stock communities typically call stocks "useless" when they have:</p>
+        <ul>
+            <li>Lost 80%+ of their value</li>
+            <li>No realistic path to recovery</li>
+            <li>Bankrupt or failing companies behind them</li>
+            <li>Been pump-and-dumped to near zero</li>
+            <li>No trading volume or interest</li>
+        </ul>
+        
+        <h2>Where You'll See "Useless Stocks" Discussed</h2>
+        <p>These Reddit communities frequently use the term "useless stocks":</p>
+        
+        <div class="reddit-links">
+            <a href="https://www.reddit.com/r/pennystocks/" class="reddit-link" target="_blank">
+                r/pennystocks
+            </a>
+            
+            <a href="https://www.reddit.com/r/wallstreetbets/" class="reddit-link" target="_blank">
+                r/wallstreetbets
+            </a>
+            
+            <a href="https://www.reddit.com/r/investing/" class="reddit-link" target="_blank">
+                r/investing
+            </a>
+            
+            <a href="https://www.reddit.com/r/stocks/" class="reddit-link" target="_blank">
+                r/stocks
+            </a>
+            
+            <a href="https://www.reddit.com/r/SecurityAnalysis/" class="reddit-link" target="_blank">
+                r/SecurityAnalysis
+            </a>
+            
+            <a href="https://www.reddit.com/r/ValueInvesting/" class="reddit-link" target="_blank">
+                r/ValueInvesting
+            </a>
         </div>
-        <a href="https://x.com/Stock_Checker_" target="_blank" class="x-button">
-            𝕏 Follow Updates
-        </a>
-        <div class="stats-bar">
-            <div class="stat-item">
-                24H VOLUME: <span class="stat-value">$2.8B</span>
-            </div>
-            <div class="stat-item">
-                24H GAINERS: <span class="stat-value">127</span>
-            </div>
+        
+        <h2>Common Phrases You'll See</h2>
+        <ul>
+            <li>"I'm holding too many useless stocks"</li>
+            <li>"This is just another useless stock"</li>
+            <li>"How to avoid useless stocks?"</li>
+            <li>"My portfolio is full of useless stocks"</li>
+            <li>"Don't buy useless stocks like this"</li>
+        </ul>
+        
+        <div class="warning">
+            <h3>Important Note</h3>
+            <p>Just because a community calls something a "useless stock" doesn't mean it has no potential. Always do your own research before making investment decisions.</p>
         </div>
+        
+        <p style="text-align: center; margin-top: 30px; color: #666;">
+            "Useless stocks" - the term that says it all in just two words.
+        </p>
     </div>
-
-    <div class="filters">
-        <button class="filter-btn active" data-period="24h">📈 Trending 24H</button>
-        <button class="filter-btn" data-period="week">📊 Top Week</button>
-        <button class="filter-btn" data-period="month">🚀 Top Month</button>
-        <button class="filter-btn" data-period="gainers">⬆️ Gainers</button>
-    </div>
-
-    <div class="table-container">
-        <table class="stocks-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>STOCK</th>
-                    <th>PRICE</th>
-                    <th>AGE</th>
-                    <th>VOLUME</th>
-                    <th>1H</th>
-                    <th>6H</th>
-                    <th>24H</th>
-                    <th>7D</th>
-                    <th>BUY</th>
-                </tr>
-            </thead>
-            <tbody id="stocksTableBody">
-                <!-- Stocks will be populated here -->
-            </tbody>
-        </table>
-    </div>
-
-    <div id="loading" class="loading" style="display: none;">
-        Loading stocks...
-    </div>
-
-    <script>
-        const stockData = {
-            '24h': [
-                {
-                    symbol: 'PLTR',
-                    name: 'Palantir Technologies',
-                    price: '$28.45',
-                    age: '2h',
-                    volume: '$157M',
-                    changes: { '1h': '+2.1%', '6h': '+4.2%', '24h': '+5.8%', '7d': '+12.3%' }
-                },
-                {
-                    symbol: 'MU',
-                    name: 'Micron Technology',
-                    price: '$142.30',
-                    age: '45m',
-                    volume: '$89M',
-                    changes: { '1h': '+1.2%', '6h': '+2.8%', '24h': '+4.2%', '7d': '+8.9%' }
-                },
-                {
-                    symbol: 'URI',
-                    name: 'United Rentals',
-                    price: '$681.25',
-                    age: '1h',
-                    volume: '$45M',
-                    changes: { '1h': '+0.8%', '6h': '+2.1%', '24h': '+3.9%', '7d': '+6.7%' }
-                },
-                {
-                    symbol: 'DONUT',
-                    name: 'Donut Media Holdings',
-                    price: '$4.89',
-                    age: '23m',
-                    volume: '$12M',
-                    changes: { '1h': '+1.8%', '6h': '+3.2%', '24h': '+7.4%', '7d': '+15.6%' }
-                },
-                {
-                    symbol: 'INTU',
-                    name: 'Intuit Inc',
-                    price: '$634.78',
-                    age: '3h',
-                    volume: '$67M',
-                    changes: { '1h': '+0.5%', '6h': '+1.8%', '24h': '+3.1%', '7d': '+5.4%' }
-                },
-                {
-                    symbol: 'ARM',
-                    name: 'Arm Holdings',
-                    price: '$146.82',
-                    age: '2h',
-                    volume: '$123M',
-                    changes: { '1h': '+0.9%', '6h': '+1.5%', '24h': '+2.7%', '7d': '+7.8%' }
-                },
-                {
-                    symbol: 'AVGO',
-                    name: 'Broadcom Inc',
-                    price: '$1,542.67',
-                    age: '1h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.4%', '6h': '+2.9%', '24h': '+4.8%', '7d': '+9.2%' }
-                },
-                {
-                    symbol: 'CRM',
-                    name: 'Salesforce Inc',
-                    price: '$298.45',
-                    age: '4h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.1%', '6h': '+2.3%', '24h': '+4.1%', '7d': '+8.7%' }
-                },
-                {
-                    symbol: 'NOW',
-                    name: 'ServiceNow Inc',
-                    price: '$789.23',
-                    age: '2h',
-                    volume: '$98M',
-                    changes: { '1h': '+0.7%', '6h': '+1.9%', '24h': '+3.6%', '7d': '+7.1%' }
-                },
-                {
-                    symbol: 'SNOW',
-                    name: 'Snowflake Inc',
-                    price: '$167.89',
-                    age: '5h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.3%', '6h': '+2.7%', '24h': '+4.9%', '7d': '+9.8%' }
-                },
-                {
-                    symbol: 'SHOP',
-                    name: 'Shopify Inc',
-                    price: '$89.34',
-                    age: '1h',
-                    volume: '$167M',
-                    changes: { '1h': '+2.1%', '6h': '+3.8%', '24h': '+6.2%', '7d': '+11.4%' }
-                },
-                {
-                    symbol: 'SPOT',
-                    name: 'Spotify Technology',
-                    price: '$267.45',
-                    age: '3h',
-                    volume: '$89M',
-                    changes: { '1h': '+0.9%', '6h': '+2.1%', '24h': '+3.8%', '7d': '+7.6%' }
-                },
-                {
-                    symbol: 'UBER',
-                    name: 'Uber Technologies',
-                    price: '$67.89',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.6%', '6h': '+3.2%', '24h': '+5.4%', '7d': '+10.1%' }
-                },
-                {
-                    symbol: 'DASH',
-                    name: 'DoorDash Inc',
-                    price: '$145.67',
-                    age: '4h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.2%', '6h': '+2.8%', '24h': '+4.7%', '7d': '+8.9%' }
-                },
-                {
-                    symbol: 'ABNB',
-                    name: 'Airbnb Inc',
-                    price: '$134.78',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.8%', '6h': '+3.5%', '24h': '+5.9%', '7d': '+11.2%' }
-                },
-                {
-                    symbol: 'LYFT',
-                    name: 'Lyft Inc',
-                    price: '$23.45',
-                    age: '6h',
-                    volume: '$67M',
-                    changes: { '1h': '+0.8%', '6h': '+1.9%', '24h': '+3.4%', '7d': '+6.8%' }
-                },
-                {
-                    symbol: 'TWLO',
-                    name: 'Twilio Inc',
-                    price: '$89.67',
-                    age: '3h',
-                    volume: '$78M',
-                    changes: { '1h': '+1.5%', '6h': '+3.1%', '24h': '+5.2%', '7d': '+9.7%' }
-                },
-                {
-                    symbol: 'OKTA',
-                    name: 'Okta Inc',
-                    price: '$123.45',
-                    age: '2h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.1%', '6h': '+2.6%', '24h': '+4.3%', '7d': '+8.1%' }
-                },
-                {
-                    symbol: 'ZM',
-                    name: 'Zoom Video',
-                    price: '$78.92',
-                    age: '5h',
-                    volume: '$98M',
-                    changes: { '1h': '+0.9%', '6h': '+2.2%', '24h': '+3.9%', '7d': '+7.4%' }
-                },
-                {
-                    symbol: 'DKNG',
-                    name: 'DraftKings Inc',
-                    price: '$45.67',
-                    age: '1h',
-                    volume: '$167M',
-                    changes: { '1h': '+2.3%', '6h': '+4.1%', '24h': '+6.8%', '7d': '+12.5%' }
-                },
-                {
-                    symbol: 'PENN',
-                    name: 'PENN Entertainment',
-                    price: '$18.34',
-                    age: '4h',
-                    volume: '$89M',
-                    changes: { '1h': '+1.7%', '6h': '+3.4%', '24h': '+5.6%', '7d': '+10.3%' }
-                },
-                {
-                    symbol: 'RIVN',
-                    name: 'Rivian Automotive',
-                    price: '$12.78',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.9%', '6h': '+3.7%', '24h': '+6.1%', '7d': '+11.8%' }
-                },
-                {
-                    symbol: 'LCID',
-                    name: 'Lucid Group Inc',
-                    price: '$3.45',
-                    age: '3h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.1%', '6h': '+4.3%', '24h': '+7.2%', '7d': '+13.6%' }
-                },
-                {
-                    symbol: 'NIO',
-                    name: 'NIO Inc',
-                    price: '$8.92',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.6%', '6h': '+3.2%', '24h': '+5.4%', '7d': '+10.1%' }
-                },
-                {
-                    symbol: 'XPEV',
-                    name: 'XPeng Inc',
-                    price: '$11.23',
-                    age: '5h',
-                    volume: '$123M',
-                    changes: { '1h': '+1.4%', '6h': '+2.9%', '24h': '+4.8%', '7d': '+9.2%' }
-                },
-                {
-                    symbol: 'LI',
-                    name: 'Li Auto Inc',
-                    price: '$24.56',
-                    age: '2h',
-                    volume: '$167M',
-                    changes: { '1h': '+1.8%', '6h': '+3.6%', '24h': '+5.9%', '7d': '+11.4%' }
-                },
-                {
-                    symbol: 'AFRM',
-                    name: 'Affirm Holdings',
-                    price: '$67.89',
-                    age: '4h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.2%', '6h': '+2.7%', '24h': '+4.5%', '7d': '+8.7%' }
-                },
-                {
-                    symbol: 'SQ',
-                    name: 'Block Inc',
-                    price: '$89.45',
-                    age: '1h',
-                    volume: '$198M',
-                    changes: { '1h': '+1.7%', '6h': '+3.4%', '24h': '+5.7%', '7d': '+10.8%' }
-                },
-                {
-                    symbol: 'PYPL',
-                    name: 'PayPal Holdings',
-                    price: '$78.92',
-                    age: '3h',
-                    volume: '$267M',
-                    changes: { '1h': '+1.3%', '6h': '+2.8%', '24h': '+4.6%', '7d': '+8.9%' }
-                },
-                {
-                    symbol: 'UPST',
-                    name: 'Upstart Holdings',
-                    price: '$34.67',
-                    age: '6h',
-                    volume: '$89M',
-                    changes: { '1h': '+2.1%', '6h': '+4.2%', '24h': '+6.9%', '7d': '+12.7%' }
-                }
-            ],
-            'week': [
-                {
-                    symbol: 'HOOD',
-                    name: 'Robinhood Markets',
-                    price: '$23.67',
-                    age: '6h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.3%', '6h': '+5.1%', '24h': '+8.2%', '7d': '+15.2%' }
-                },
-                {
-                    symbol: 'COIN',
-                    name: 'Coinbase Global',
-                    price: '$268.45',
-                    age: '4h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.8%', '6h': '+4.2%', '24h': '+7.1%', '7d': '+12.8%' }
-                },
-                {
-                    symbol: 'NET',
-                    name: 'Cloudflare Inc',
-                    price: '$89.34',
-                    age: '2h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.5%', '6h': '+3.8%', '24h': '+6.5%', '7d': '+11.6%' }
-                },
-                {
-                    symbol: 'DONUT',
-                    name: 'Donut Media Holdings',
-                    price: '$4.89',
-                    age: '23m',
-                    volume: '$12M',
-                    changes: { '1h': '+1.8%', '6h': '+3.2%', '24h': '+7.4%', '7d': '+15.6%' }
-                },
-                {
-                    symbol: 'RBLX',
-                    name: 'Roblox Corporation',
-                    price: '$41.89',
-                    age: '5h',
-                    volume: '$98M',
-                    changes: { '1h': '+1.2%', '6h': '+3.1%', '24h': '+5.8%', '7d': '+9.4%' }
-                },
-                {
-                    symbol: 'MELI',
-                    name: 'MercadoLibre Inc',
-                    price: '$1,847.92',
-                    age: '3h',
-                    volume: '$78M',
-                    changes: { '1h': '+1.0%', '6h': '+2.8%', '24h': '+5.2%', '7d': '+8.7%' }
-                },
-                {
-                    symbol: 'SMCI',
-                    name: 'Super Micro Computer',
-                    price: '$456.78',
-                    age: '1h',
-                    volume: '$345M',
-                    changes: { '1h': '+2.8%', '6h': '+5.9%', '24h': '+9.7%', '7d': '+18.4%' }
-                },
-                {
-                    symbol: 'AMD',
-                    name: 'Advanced Micro Devices',
-                    price: '$167.89',
-                    age: '2h',
-                    volume: '$567M',
-                    changes: { '1h': '+2.1%', '6h': '+4.8%', '24h': '+8.3%', '7d': '+16.2%' }
-                },
-                {
-                    symbol: 'NVDA',
-                    name: 'NVIDIA Corporation',
-                    price: '$934.12',
-                    age: '1h',
-                    volume: '$789M',
-                    changes: { '1h': '+1.9%', '6h': '+4.3%', '24h': '+7.8%', '7d': '+14.9%' }
-                },
-                {
-                    symbol: 'TSM',
-                    name: 'Taiwan Semiconductor',
-                    price: '$134.56',
-                    age: '3h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.6%', '6h': '+3.7%', '24h': '+6.8%', '7d': '+13.1%' }
-                },
-                {
-                    symbol: 'QCOM',
-                    name: 'QUALCOMM Inc',
-                    price: '$189.34',
-                    age: '4h',
-                    volume: '$178M',
-                    changes: { '1h': '+1.4%', '6h': '+3.2%', '24h': '+5.9%', '7d': '+11.7%' }
-                },
-                {
-                    symbol: 'INTC',
-                    name: 'Intel Corporation',
-                    price: '$34.78',
-                    age: '2h',
-                    volume: '$456M',
-                    changes: { '1h': '+1.8%', '6h': '+4.1%', '24h': '+7.2%', '7d': '+13.8%' }
-                },
-                {
-                    symbol: 'ADBE',
-                    name: 'Adobe Inc',
-                    price: '$567.89',
-                    age: '1h',
-                    volume: '$123M',
-                    changes: { '1h': '+1.3%', '6h': '+2.9%', '24h': '+5.4%', '7d': '+10.6%' }
-                },
-                {
-                    symbol: 'CRM',
-                    name: 'Salesforce Inc',
-                    price: '$298.45',
-                    age: '5h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.1%', '6h': '+2.6%', '24h': '+4.8%', '7d': '+9.3%' }
-                },
-                {
-                    symbol: 'ORCL',
-                    name: 'Oracle Corporation',
-                    price: '$145.67',
-                    age: '3h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.5%', '6h': '+3.4%', '24h': '+6.1%', '7d': '+11.8%' }
-                },
-                {
-                    symbol: 'SNOW',
-                    name: 'Snowflake Inc',
-                    price: '$167.89',
-                    age: '2h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.7%', '6h': '+3.9%', '24h': '+6.7%', '7d': '+12.9%' }
-                },
-                {
-                    symbol: 'SHOP',
-                    name: 'Shopify Inc',
-                    price: '$89.34',
-                    age: '4h',
-                    volume: '$198M',
-                    changes: { '1h': '+2.2%', '6h': '+4.7%', '24h': '+8.1%', '7d': '+15.5%' }
-                },
-                {
-                    symbol: 'SPOT',
-                    name: 'Spotify Technology',
-                    price: '$267.45',
-                    age: '1h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.4%', '6h': '+3.1%', '24h': '+5.6%', '7d': '+10.9%' }
-                },
-                {
-                    symbol: 'UBER',
-                    name: 'Uber Technologies',
-                    price: '$67.89',
-                    age: '6h',
-                    volume: '$267M',
-                    changes: { '1h': '+1.9%', '6h': '+4.2%', '24h': '+7.3%', '7d': '+14.1%' }
-                },
-                {
-                    symbol: 'DASH',
-                    name: 'DoorDash Inc',
-                    price: '$145.67',
-                    age: '2h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.6%', '6h': '+3.6%', '24h': '+6.4%', '7d': '+12.3%' }
-                },
-                {
-                    symbol: 'ABNB',
-                    name: 'Airbnb Inc',
-                    price: '$134.78',
-                    age: '3h',
-                    volume: '$223M',
-                    changes: { '1h': '+2.0%', '6h': '+4.5%', '24h': '+7.8%', '7d': '+14.8%' }
-                },
-                {
-                    symbol: 'TWLO',
-                    name: 'Twilio Inc',
-                    price: '$89.67',
-                    age: '1h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.8%', '6h': '+4.0%', '24h': '+6.9%', '7d': '+13.2%' }
-                },
-                {
-                    symbol: 'ZM',
-                    name: 'Zoom Video',
-                    price: '$78.92',
-                    age: '4h',
-                    volume: '$178M',
-                    changes: { '1h': '+1.5%', '6h': '+3.3%', '24h': '+5.8%', '7d': '+11.1%' }
-                },
-                {
-                    symbol: 'DKNG',
-                    name: 'DraftKings Inc',
-                    price: '$45.67',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.4%', '6h': '+5.1%', '24h': '+8.6%', '7d': '+16.3%' }
-                },
-                {
-                    symbol: 'RIVN',
-                    name: 'Rivian Automotive',
-                    price: '$12.78',
-                    age: '5h',
-                    volume: '$345M',
-                    changes: { '1h': '+2.1%', '6h': '+4.6%', '24h': '+7.9%', '7d': '+15.1%' }
-                },
-                {
-                    symbol: 'LCID',
-                    name: 'Lucid Group Inc',
-                    price: '$3.45',
-                    age: '1h',
-                    volume: '$278M',
-                    changes: { '1h': '+2.6%', '6h': '+5.4%', '24h': '+9.1%', '7d': '+17.2%' }
-                },
-                {
-                    symbol: 'SQ',
-                    name: 'Block Inc',
-                    price: '$89.45',
-                    age: '3h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.7%', '6h': '+3.8%', '24h': '+6.6%', '7d': '+12.7%' }
-                },
-                {
-                    symbol: 'PYPL',
-                    name: 'PayPal Holdings',
-                    price: '$78.92',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.4%', '6h': '+3.1%', '24h': '+5.5%', '7d': '+10.6%' }
-                },
-                {
-                    symbol: 'UPST',
-                    name: 'Upstart Holdings',
-                    price: '$34.67',
-                    age: '4h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.3%', '6h': '+4.9%', '24h': '+8.3%', '7d': '+15.8%' }
-                },
-                {
-                    symbol: 'SOFI',
-                    name: 'SoFi Technologies',
-                    price: '$12.34',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.0%', '6h': '+4.3%', '24h': '+7.6%', '7d': '+14.5%' }
-                }
-            ],
-            'month': [
-                {
-                    symbol: 'HOOD',
-                    name: 'Robinhood Markets',
-                    price: '$23.67',
-                    age: '6h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.3%', '6h': '+8.1%', '24h': '+15.2%', '7d': '+312.3%' }
-                },
-                {
-                    symbol: 'SMCI',
-                    name: 'Super Micro Computer',
-                    price: '$456.78',
-                    age: '1h',
-                    volume: '$345M',
-                    changes: { '1h': '+4.2%', '6h': '+12.7%', '24h': '+28.9%', '7d': '+186.4%' }
-                },
-                {
-                    symbol: 'ASTS',
-                    name: 'AST SpaceMobile',
-                    price: '$12.45',
-                    age: '8h',
-                    volume: '$67M',
-                    changes: { '1h': '+1.8%', '6h': '+5.2%', '24h': '+12.1%', '7d': '+89.2%' }
-                },
-                {
-                    symbol: 'GRAIL',
-                    name: 'GRAIL Inc',
-                    price: '$34.28',
-                    age: '12h',
-                    volume: '$45M',
-                    changes: { '1h': '+2.1%', '6h': '+6.2%', '24h': '+14.5%', '7d': '+93.2%' }
-                },
-                {
-                    symbol: 'DONUT',
-                    name: 'Donut Media Holdings',
-                    price: '$4.89',
-                    age: '23m',
-                    volume: '$12M',
-                    changes: { '1h': '+3.8%', '6h': '+9.2%', '24h': '+18.4%', '7d': '+87.6%' }
-                },
-                {
-                    symbol: 'MP',
-                    name: 'MP Materials Corp',
-                    price: '$18.73',
-                    age: '4h',
-                    volume: '$89M',
-                    changes: { '1h': '+1.5%', '6h': '+4.8%', '24h': '+9.8%', '7d': '+67.4%' }
-                },
-                {
-                    symbol: 'MELI',
-                    name: 'MercadoLibre Inc',
-                    price: '$1,847.92',
-                    age: '3h',
-                    volume: '$78M',
-                    changes: { '1h': '+1.0%', '6h': '+3.8%', '24h': '+8.7%', '7d': '+42.0%' }
-                },
-                {
-                    symbol: 'NVDA',
-                    name: 'NVIDIA Corporation',
-                    price: '$934.12',
-                    age: '1h',
-                    volume: '$789M',
-                    changes: { '1h': '+2.1%', '6h': '+6.8%', '24h': '+13.4%', '7d': '+58.9%' }
-                },
-                {
-                    symbol: 'AMD',
-                    name: 'Advanced Micro Devices',
-                    price: '$167.89',
-                    age: '2h',
-                    volume: '$567M',
-                    changes: { '1h': '+2.8%', '6h': '+7.3%', '24h': '+14.1%', '7d': '+52.7%' }
-                },
-                {
-                    symbol: 'COIN',
-                    name: 'Coinbase Global',
-                    price: '$268.45',
-                    age: '4h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.4%', '6h': '+6.9%', '24h': '+12.8%', '7d': '+47.3%' }
-                },
-                {
-                    symbol: 'RBLX',
-                    name: 'Roblox Corporation',
-                    price: '$41.89',
-                    age: '5h',
-                    volume: '$98M',
-                    changes: { '1h': '+2.2%', '6h': '+6.1%', '24h': '+11.4%', '7d': '+41.8%' }
-                },
-                {
-                    symbol: 'NET',
-                    name: 'Cloudflare Inc',
-                    price: '$89.34',
-                    age: '2h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.9%', '6h': '+5.7%', '24h': '+10.6%', '7d': '+38.5%' }
-                },
-                {
-                    symbol: 'SHOP',
-                    name: 'Shopify Inc',
-                    price: '$89.34',
-                    age: '4h',
-                    volume: '$198M',
-                    changes: { '1h': '+2.6%', '6h': '+7.2%', '24h': '+13.1%', '7d': '+45.2%' }
-                },
-                {
-                    symbol: 'DKNG',
-                    name: 'DraftKings Inc',
-                    price: '$45.67',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.9%', '6h': '+8.1%', '24h': '+14.6%', '7d': '+49.3%' }
-                },
-                {
-                    symbol: 'RIVN',
-                    name: 'Rivian Automotive',
-                    price: '$12.78',
-                    age: '5h',
-                    volume: '$345M',
-                    changes: { '1h': '+3.1%', '6h': '+8.4%', '24h': '+15.1%', '7d': '+53.7%' }
-                },
-                {
-                    symbol: 'LCID',
-                    name: 'Lucid Group Inc',
-                    price: '$3.45',
-                    age: '1h',
-                    volume: '$278M',
-                    changes: { '1h': '+3.6%', '6h': '+9.1%', '24h': '+17.2%', '7d': '+61.4%' }
-                },
-                {
-                    symbol: 'UPST',
-                    name: 'Upstart Holdings',
-                    price: '$34.67',
-                    age: '4h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.7%', '6h': '+7.5%', '24h': '+13.8%', '7d': '+46.9%' }
-                },
-                {
-                    symbol: 'SOFI',
-                    name: 'SoFi Technologies',
-                    price: '$12.34',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.4%', '6h': '+6.8%', '24h': '+12.5%', '7d': '+43.1%' }
-                },
-                {
-                    symbol: 'PLTR',
-                    name: 'Palantir Technologies',
-                    price: '$28.45',
-                    age: '2h',
-                    volume: '$157M',
-                    changes: { '1h': '+2.1%', '6h': '+5.9%', '24h': '+11.3%', '7d': '+39.8%' }
-                },
-                {
-                    symbol: 'SNOW',
-                    name: 'Snowflake Inc',
-                    price: '$167.89',
-                    age: '2h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.0%', '6h': '+5.6%', '24h': '+10.9%', '7d': '+37.2%' }
-                },
-                {
-                    symbol: 'UBER',
-                    name: 'Uber Technologies',
-                    price: '$67.89',
-                    age: '6h',
-                    volume: '$267M',
-                    changes: { '1h': '+2.3%', '6h': '+6.4%', '24h': '+12.1%', '7d': '+41.7%' }
-                },
-                {
-                    symbol: 'DASH',
-                    name: 'DoorDash Inc',
-                    price: '$145.67',
-                    age: '2h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.8%', '6h': '+5.3%', '24h': '+10.4%', '7d': '+36.1%' }
-                },
-                {
-                    symbol: 'ABNB',
-                    name: 'Airbnb Inc',
-                    price: '$134.78',
-                    age: '3h',
-                    volume: '$223M',
-                    changes: { '1h': '+2.2%', '6h': '+6.2%', '24h': '+11.8%', '7d': '+40.5%' }
-                },
-                {
-                    symbol: 'TWLO',
-                    name: 'Twilio Inc',
-                    price: '$89.67',
-                    age: '1h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.5%', '6h': '+6.9%', '24h': '+12.7%', '7d': '+44.2%' }
-                },
-                {
-                    symbol: 'ZM',
-                    name: 'Zoom Video',
-                    price: '$78.92',
-                    age: '4h',
-                    volume: '$178M',
-                    changes: { '1h': '+1.7%', '6h': '+4.9%', '24h': '+9.6%', '7d': '+33.8%' }
-                },
-                {
-                    symbol: 'SQ',
-                    name: 'Block Inc',
-                    price: '$89.45',
-                    age: '3h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.0%', '6h': '+5.8%', '24h': '+11.2%', '7d': '+38.9%' }
-                },
-                {
-                    symbol: 'PYPL',
-                    name: 'PayPal Holdings',
-                    price: '$78.92',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.6%', '6h': '+4.7%', '24h': '+9.3%', '7d': '+32.1%' }
-                },
-                {
-                    symbol: 'SPOT',
-                    name: 'Spotify Technology',
-                    price: '$267.45',
-                    age: '1h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.9%', '6h': '+5.4%', '24h': '+10.7%', '7d': '+37.6%' }
-                },
-                {
-                    symbol: 'NIO',
-                    name: 'NIO Inc',
-                    price: '$8.92',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.8%', '6h': '+7.6%', '24h': '+13.9%', '7d': '+48.1%' }
-                },
-                {
-                    symbol: 'XPEV',
-                    name: 'XPeng Inc',
-                    price: '$11.23',
-                    age: '5h',
-                    volume: '$123M',
-                    changes: { '1h': '+2.5%', '6h': '+7.1%', '24h': '+13.2%', '7d': '+45.7%' }
-                }
-            ],
-            'gainers': [
-                {
-                    symbol: 'NVDA',
-                    name: 'NVIDIA Corporation',
-                    price: '$934.12',
-                    age: '1h',
-                    volume: '$567M',
-                    changes: { '1h': '+3.2%', '6h': '+7.8%', '24h': '+12.4%', '7d': '+18.9%' }
-                },
-                {
-                    symbol: 'AAPL',
-                    name: 'Apple Inc',
-                    price: '$189.67',
-                    age: '2h',
-                    volume: '$456M',
-                    changes: { '1h': '+2.1%', '6h': '+5.4%', '24h': '+8.9%', '7d': '+14.2%' }
-                },
-                {
-                    symbol: 'TSLA',
-                    name: 'Tesla Inc',
-                    price: '$267.89',
-                    age: '45m',
-                    volume: '$389M',
-                    changes: { '1h': '+2.8%', '6h': '+6.1%', '24h': '+10.3%', '7d': '+16.7%' }
-                },
-                {
-                    symbol: 'GOOGL',
-                    name: 'Alphabet Inc',
-                    price: '$174.23',
-                    age: '3h',
-                    volume: '$234M',
-                    changes: { '1h': '+1.9%', '6h': '+4.7%', '24h': '+7.8%', '7d': '+12.5%' }
-                },
-                {
-                    symbol: 'AMZN',
-                    name: 'Amazon.com Inc',
-                    price: '$187.45',
-                    age: '1h',
-                    volume: '$345M',
-                    changes: { '1h': '+1.7%', '6h': '+4.2%', '24h': '+7.1%', '7d': '+11.8%' }
-                },
-                {
-                    symbol: 'MSFT',
-                    name: 'Microsoft Corporation',
-                    price: '$423.78',
-                    age: '2h',
-                    volume: '$278M',
-                    changes: { '1h': '+1.5%', '6h': '+3.8%', '24h': '+6.4%', '7d': '+10.9%' }
-                },
-                {
-                    symbol: 'META',
-                    name: 'Meta Platforms Inc',
-                    price: '$512.34',
-                    age: '1h',
-                    volume: '$456M',
-                    changes: { '1h': '+2.3%', '6h': '+5.7%', '24h': '+9.1%', '7d': '+15.6%' }
-                },
-                {
-                    symbol: 'DONUT',
-                    name: 'Donut Media Holdings',
-                    price: '$4.89',
-                    age: '23m',
-                    volume: '$12M',
-                    changes: { '1h': '+1.8%', '6h': '+3.2%', '24h': '+7.4%', '7d': '+15.6%' }
-                },
-                {
-                    symbol: 'NFLX',
-                    name: 'Netflix Inc',
-                    price: '$634.56',
-                    age: '4h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.4%', '6h': '+3.5%', '24h': '+5.9%', '7d': '+9.8%' }
-                },
-                {
-                    symbol: 'AMD',
-                    name: 'Advanced Micro Devices',
-                    price: '$167.89',
-                    age: '2h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.6%', '6h': '+6.2%', '24h': '+9.8%', '7d': '+16.1%' }
-                },
-                {
-                    symbol: 'BABA',
-                    name: 'Alibaba Group',
-                    price: '$89.45',
-                    age: '5h',
-                    volume: '$345M',
-                    changes: { '1h': '+2.0%', '6h': '+4.8%', '24h': '+7.6%', '7d': '+13.2%' }
-                },
-                {
-                    symbol: 'CRM',
-                    name: 'Salesforce Inc',
-                    price: '$298.45',
-                    age: '3h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.6%', '6h': '+3.9%', '24h': '+6.2%', '7d': '+10.7%' }
-                },
-                {
-                    symbol: 'ADBE',
-                    name: 'Adobe Inc',
-                    price: '$567.89',
-                    age: '1h',
-                    volume: '$198M',
-                    changes: { '1h': '+1.8%', '6h': '+4.3%', '24h': '+6.8%', '7d': '+11.9%' }
-                },
-                {
-                    symbol: 'ORCL',
-                    name: 'Oracle Corporation',
-                    price: '$145.67',
-                    age: '2h',
-                    volume: '$267M',
-                    changes: { '1h': '+1.3%', '6h': '+3.2%', '24h': '+5.4%', '7d': '+8.9%' }
-                },
-                {
-                    symbol: 'SHOP',
-                    name: 'Shopify Inc',
-                    price: '$89.34',
-                    age: '4h',
-                    volume: '$134M',
-                    changes: { '1h': '+2.4%', '6h': '+5.6%', '24h': '+8.7%', '7d': '+14.8%' }
-                },
-                {
-                    symbol: 'SPOT',
-                    name: 'Spotify Technology',
-                    price: '$267.45',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+1.9%', '6h': '+4.5%', '24h': '+7.1%', '7d': '+12.3%' }
-                },
-                {
-                    symbol: 'UBER',
-                    name: 'Uber Technologies',
-                    price: '$67.89',
-                    age: '3h',
-                    volume: '$223M',
-                    changes: { '1h': '+2.1%', '6h': '+4.9%', '24h': '+7.8%', '7d': '+13.6%' }
-                },
-                {
-                    symbol: 'DASH',
-                    name: 'DoorDash Inc',
-                    price: '$145.67',
-                    age: '2h',
-                    volume: '$167M',
-                    changes: { '1h': '+1.7%', '6h': '+4.1%', '24h': '+6.5%', '7d': '+11.2%' }
-                },
-                {
-                    symbol: 'ABNB',
-                    name: 'Airbnb Inc',
-                    price: '$134.78',
-                    age: '5h',
-                    volume: '$198M',
-                    changes: { '1h': '+2.2%', '6h': '+5.1%', '24h': '+8.1%', '7d': '+14.1%' }
-                },
-                {
-                    symbol: 'TWLO',
-                    name: 'Twilio Inc',
-                    price: '$89.67',
-                    age: '1h',
-                    volume: '$156M',
-                    changes: { '1h': '+1.8%', '6h': '+4.3%', '24h': '+6.8%', '7d': '+11.7%' }
-                },
-                {
-                    symbol: 'ZM',
-                    name: 'Zoom Video',
-                    price: '$78.92',
-                    age: '4h',
-                    volume: '$134M',
-                    changes: { '1h': '+1.5%', '6h': '+3.6%', '24h': '+5.7%', '7d': '+9.8%' }
-                },
-                {
-                    symbol: 'DKNG',
-                    name: 'DraftKings Inc',
-                    price: '$45.67',
-                    age: '2h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.7%', '6h': '+6.1%', '24h': '+9.4%', '7d': '+16.2%' }
-                },
-                {
-                    symbol: 'RIVN',
-                    name: 'Rivian Automotive',
-                    price: '$12.78',
-                    age: '3h',
-                    volume: '$234M',
-                    changes: { '1h': '+2.5%', '6h': '+5.8%', '24h': '+8.9%', '7d': '+15.4%' }
-                },
-                {
-                    symbol: 'LCID',
-                    name: 'Lucid Group Inc',
-                    price: '$3.45',
-                    age: '1h',
-                    volume: '$167M',
-                    changes: { '1h': '+3.1%', '6h': '+6.8%', '24h': '+10.2%', '7d': '+17.8%' }
-                },
-                {
-                    symbol: 'SQ',
-                    name: 'Block Inc',
-                    price: '$89.45',
-                    age: '6h',
-                    volume: '$198M',
-                    changes: { '1h': '+1.9%', '6h': '+4.4%', '24h': '+6.9%', '7d': '+12.1%' }
-                },
-                {
-                    symbol: 'PYPL',
-                    name: 'PayPal Holdings',
-                    price: '$78.92',
-                    age: '2h',
-                    volume: '$223M',
-                    changes: { '1h': '+1.6%', '6h': '+3.8%', '24h': '+6.1%', '7d': '+10.4%' }
-                },
-                {
-                    symbol: 'UPST',
-                    name: 'Upstart Holdings',
-                    price: '$34.67',
-                    age: '4h',
-                    volume: '$134M',
-                    changes: { '1h': '+2.8%', '6h': '+6.4%', '24h': '+9.7%', '7d': '+16.9%' }
-                },
-                {
-                    symbol: 'SOFI',
-                    name: 'SoFi Technologies',
-                    price: '$12.34',
-                    age: '1h',
-                    volume: '$189M',
-                    changes: { '1h': '+2.3%', '6h': '+5.2%', '24h': '+8.3%', '7d': '+14.6%' }
-                },
-                {
-                    symbol: 'NIO',
-                    name: 'NIO Inc',
-                    price: '$8.92',
-                    age: '3h',
-                    volume: '$156M',
-                    changes: { '1h': '+2.0%', '6h': '+4.7%', '24h': '+7.4%', '7d': '+12.8%' }
-                },
-                {
-                    symbol: 'XPEV',
-                    name: 'XPeng Inc',
-                    price: '$11.23',
-                    age: '2h',
-                    volume: '$167M',
-                    changes: { '1h': '+1.8%', '6h': '+4.2%', '24h': '+6.6%', '7d': '+11.5%' }
-                }
-            ]
-        };
-
-        let currentPeriod = '24h';
-        let filteredStocks = stockData[currentPeriod];
-
-        function getChangeClass(value) {
-            return value.startsWith('+') ? 'positive' : 'negative';
-        }
-
-        function generateBuyLinks(symbol) {
-            return {
-                primary: `https://robinhood.com/stocks/${symbol}`,
-                secondary: `https://www.etrade.com/trade/${symbol}`
-            };
-        }
-
-        function renderStocks(stocks) {
-            const tbody = document.getElementById('stocksTableBody');
-            
-            tbody.innerHTML = stocks.map((stock, index) => {
-                const links = generateBuyLinks(stock.symbol);
-                return `
-                    <tr>
-                        <td class="rank">#${index + 1}</td>
-                        <td>
-                            <div class="token-info">
-                                <div class="token-logo">${stock.symbol.charAt(0)}</div>
-                                <div class="token-details">
-                                    <div class="token-symbol">${stock.symbol}</div>
-                                    <div class="token-name">${stock.name}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="price">${stock.price}</td>
-                        <td class="age">${stock.age}</td>
-                        <td class="volume">${stock.volume}</td>
-                        <td><span class="percentage ${getChangeClass(stock.changes['1h'])}">${stock.changes['1h']}</span></td>
-                        <td><span class="percentage ${getChangeClass(stock.changes['6h'])}">${stock.changes['6h']}</span></td>
-                        <td><span class="percentage ${getChangeClass(stock.changes['24h'])}">${stock.changes['24h']}</span></td>
-                        <td><span class="percentage ${getChangeClass(stock.changes['7d'])}">${stock.changes['7d']}</span></td>
-                        <td>
-                            <div class="buy-buttons">
-                                <a href="${links.primary}" class="buy-btn buy-primary" target="_blank">RH</a>
-                                <a href="${links.secondary}" class="buy-btn buy-secondary" target="_blank">ET</a>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function filterStocks(searchTerm) {
-            if (!searchTerm) {
-                return stockData[currentPeriod];
-            }
-            
-            return stockData[currentPeriod].filter(stock => 
-                stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                stock.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        function switchPeriod(period) {
-            currentPeriod = period;
-            filteredStocks = stockData[period];
-            renderStocks(filteredStocks);
-            
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.period === period) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        // Event listeners
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                switchPeriod(btn.dataset.period);
-            });
-        });
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const searchTerm = e.target.value;
-            filteredStocks = filterStocks(searchTerm);
-            renderStocks(filteredStocks);
-        });
-
-        // Initialize
-        renderStocks(filteredStocks);
-
-        // Real-time updates simulation
-        setInterval(() => {
-            const rows = document.querySelectorAll('.stocks-table tbody tr');
-            rows.forEach(row => {
-                const percentages = row.querySelectorAll('.percentage');
-                percentages.forEach(p => {
-                    if (Math.random() > 0.7) { // 30% chance to update
-                        const currentValue = parseFloat(p.textContent.replace('%', '').replace('+', ''));
-                        const variation = (Math.random() - 0.5) * 0.2; // Small variation
-                        const newValue = currentValue + variation;
-                        const sign = newValue >= 0 ? '+' : '';
-                        p.textContent = `${sign}${newValue.toFixed(1)}%`;
-                        p.className = `percentage ${newValue >= 0 ? 'positive' : 'negative'}`;
-                    }
-                });
-            });
-        }, 3000);
-    </script>
 </body>
 </html>
